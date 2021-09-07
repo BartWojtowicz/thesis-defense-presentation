@@ -5,14 +5,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <meta name="author" content="Kemal Erdem">
 
-  <title>Presentation Template by Kemal Erdem</title>
+  <title>Prezentacja - Praca Licencjacka</title>
 
   <link rel="stylesheet" href="dist/reset.css">
   <link rel="stylesheet" href="dist/reveal.css">
   <link rel="stylesheet" href="dist/custom.css">
   <link rel="stylesheet" href="plugin/pointer/pointer.css">
   <link rel="stylesheet" href="plugin/drawer/drawer.css">
-  <link rel="stylesheet" href="dist/theme/black.css" id="theme">
+  <link rel="stylesheet" href="dist/theme/pwr-theme.css" id="theme">
 
   <!-- Theme used for syntax highlighting of code -->
   <link rel="stylesheet" href="css/highlight/isbl-editor-light.css">
@@ -21,39 +21,122 @@
 <div class="reveal">
   <div class="slides">
     <section class="main-slide">
-      <h2>Presentation Template</h2>
-      <small>Authors...</small>
+      <h2>Nienadzorowana detekcja anomalii z użyciem sieci generatywnych</h2>
+      <small>Bartosz Wójtowicz</small>
     </section>
+
     <section>
-      <h2>Presentation pointer</h2>
-      <h5>("Q" for pointer)</h5>
-      <a href="https://github.com/burnpiro/reveal-pointer">Check plugin's page for details</a>
+      <h2>Agenda</h2>
+      <ol>
+        <li class="fragment">Czym jest nienadzorowana detekcja anomalii?</li>
+        <li class="fragment">Co to są sieci GAN?</li>
+        <li class="fragment">Detekcja anomalii z użyciem modelu AnoGAN</li>
+      </ol>
     </section>
-    <section class="full-width-slide">
-      <h2>Drawing board </h2>
-      <h5>("T" to toggle drawing board)</h5>
-      <p class="small">("D" to toggle drawing)</p>
-      <p class="small">("Ctrl + z" to remove last line)</p>
-      <p class="small">"1", "2", "3", "4" to change colors<br/>
-        (depends on your color list, if you have 5 colors then 1,2,3,4,5 etc)</p>
-      <a class="small" href="https://github.com/burnpiro/reveal-drawer">Check plugin's page for details</a>
+
+    <section>
+      <h3>Czym jest nienadzorowana detekcja anomalii?</h3>
+      <img src="images/normal_vs_anomalies.png">
     </section>
-    <section class="full-width-compressed-slide">
-      <h2>Slide 1</h2>
-      <p class="fragment">
-        ABC
-        $$
-        L_{a}T_{e}X
-        $$
-      </p>
-      <pre><code data-trim data-noescape>
-(def lazy-fib
-  (concat
-   [0 1]
-   ((fn rfib [a b]
-        (lazy-cons (+ a b) (rfib b (+ a b)))) 0 1)))
-  </code></pre>
+
+    <section> 
+      <h3>Detekcja Anomalii</h3>
+      <ul>
+        <li class="fragment small">W analizie danych detekcją anomalii nazywamy proces identyfikacji obserwacji znacznie różniących
+          się od większości obserwacji w naszym zbiorze danych.</li>
+        <li class="fragment small">Bardzo często anomalie korespondują z jakiegoś rodzaju problemem np. oszustwo bankowe, 
+          błąd w tekście, problem natury medycznej.</li>
+      </ul>         
     </section>
+
+    <section>
+      <h3>Co to znaczy nienadzorowana?</h3>
+      <ul>
+        <li class = "small">Oznacza to, że podczas treningu nie mamy informacji, które z obserwacji w naszym zbiorze treningowym
+          są "normalne", a które są anomaliami. Wiemy jedynie, iż anomalie stanowią znaczną mniejszość naszych obserwacji.</li>
+      </ul> 
+  </section>
+
+  <section>
+    <h3>Czemu to jest trudne?</h3>
+    <ul>
+      <li class="fragment small">
+        Heterogeniczne klasy anomalii - anomalie są nieregularne, zatem 
+        jedna klasa anomalii może prezentować zupełnie inne nienormalne charakterystyki od innych
+        klas anomalii. Przykładowo w nadzorze wideo - rozbój, stłuczka i włamanie są anomaliami, 
+        lecz są wizualnie niepodobne do siebie.
+      </li>
+      <li class="fragment small">
+        Rzadkość - anomalie zwykle występują bardzo rzadko, kontrastując
+        z normalnymi obserwacjiami, których jest znaczna większość. Zatem zebranie wystarczającej ilości
+        oznaczonych danych prezentujących anomalie jest zazwyczaj trudne, lub niemożliwe. Wynikiem tego 
+        jest brak oznaczonych zbiorów danych.
+      </li>
+      <li class="fragment small">
+        Dużo niewiadomych - anomalie są powiązane z dużą liczbą niewiadomych na ich temat: rodzaj zachowania,
+        struktura danych, dystrybucja. Pozostają nieznane aż do czasu zaboserwowania danej anomalii, przez
+        co nie wiemy czego się możemy spodziewać.
+      </li>
+    </ul>
+  </section>
+
+  <section>
+    <h3>Czym są sieci GAN*?</h3>
+    <p class = "small">*ang. Generative Adversarial Networks</p>
+  </section>
+
+  <section>
+    <h4>Idea GANów</h4>      
+    <ul>
+      <p class = "small">Uczymy równocześnie 2 modele:</p>
+      <li class = "small">
+        Model generatywny G - uczy się generować realistyczne dane (uczy się dystrybucji danych). 
+        Podczas treningu maksymalizuje prawdopodobieństwo popełnienia pomyłki przed D
+      </li>
+      <li class = "small">
+        Model dyskryminatywny D - estymuje prawdopodobieństwo, że próbka pochodzi
+        z prawdziwych danych, a nie z G. Podczas treningu maksymalizuje prawdopodobieństwo przydzielenia poprawnych oznaczeń otrzymanym próbkom.
+      </li>
+    </ul>
+    <img src="images/gan.png" height="300">
+  </section>
+
+  <section>
+    <h4>GAN po wytrenowaniu</h4>
+    <p class = "small">Po wytrenowaniu GANu, generator G wyuczył się mapowania $ G(z) = x$. Generator mapuje z przestrzeni $\mathcal{Z}$, do przestrzeni obrazów $\mathcal{X}$.</p>
+    <img src="images/gan.png" height="300">
+  </section>
+
+  <section>
+    <h2>Detekcja anomalii z użyciem modelu AnoGAN</h2>
+  </section>
+
+  <section>
+    <h3>Aktualny problem</h3>
+    <p class = "small">Wytrenowany GAN oferuje nam mapowanie $\mathcal{Z} \rightarrow \mathcal{X}$, lecz potrzebujemy też 
+      mapowania odwrotnego $\mathcal{X} \rightarrow \mathcal{Z}$. 
+    </p>
+    <p class = "small fragment">Innymi słowy: mając obraz $x_i$, chcemy znaleźć punkt $z_i$ z przestrzeni $Z$ tak aby obraz $G(z_i)$ był
+      "najbliższy" obrazowi $x_i$.
+    </p>
+    <img src="images/gan.png" height="300">
+  </section>
+
+
+  <section>
+    <h3>Funkcja kosztu do mapowania $\mathcal{X} \rightarrow \mathcal{Z}$</h3>
+    <p class = "small"> Definiujemy funkcję: 
+      $$
+      \mathcal{L}(z_\gamma) = (1 - \lambda) \cdot {L}_R(z_\gamma) + \lambda \cdot {L}_D(z_\gamma)
+      $$
+      gdzie:</p>
+    <ul>
+      <li class = "small fragment">$\mathcal{L}_R(z_\gamma) = \sum |x - G(z_\gamma)|$. Funkcja ta mierzy wizualne niepodobieństwo między obrazem $x_i$ i obrazem wygenerowanym $G(z_i)$</li>
+      <li class = "small fragment">$\mathcal{L}_D(z_\gamma) = \sum |f(x) - f(G(z_\gamma))|$ odpowiada za technikę zwaną image inpainting. Dba ona o to, aby generowany obraz miał podobne statystyki do obrazów w zbiorze treningowym.
+    </ul>
+  </section>
+
+
     <section>
       <h2>Thanks</h2>
       <blockquote>"There's no such thing as a stupid question!"</blockquote>
