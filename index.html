@@ -91,7 +91,7 @@
       <p class = "small">Uczymy równocześnie 2 modele:</p>
       <li class = "small">
         Model generatywny G - uczy się generować realistyczne dane (uczy się dystrybucji danych). 
-        Podczas treningu maksymalizuje prawdopodobieństwo popełnienia pomyłki przed D
+        Podczas treningu maksymalizuje prawdopodobieństwo popełnienia pomyłki przez D
       </li>
       <li class = "small">
         Model dyskryminatywny D - estymuje prawdopodobieństwo, że próbka pochodzi
@@ -136,13 +136,42 @@
     </ul>
   </section>
 
+  <section>
+    <h3>Detekcja anomalii</h3>
+    <p class = "small"> Bazując na naszej funkcji kosztu
+      $$
+      \mathcal{L}(z_\gamma) = (1 - \lambda) \cdot {L}_R(z_\gamma) + \lambda \cdot {L}_D(z_\gamma)
+      $$
+      mapujemy zadany obraz $x$ do przestrzeni $\mathcal{Z}$. </p>
+    <p class = "small fragment">
+      Dla obrazów normalnych jesteśmy w stanie znaleźć takie $z$, że $G(z)$ będzie podobne do $x$, 
+      natomiast dla obrazów, które są anomaliami nie będziemy w stanie znaleźć takiego $z$.
+    </p>
+    <p class = "small fragment">
+      Wtedy również możemy zdefiniować funkcję $A(x) = (1 - \lambda) \cdot R(x) + \lambda \cdot D(x)$, gdzie $R(x)$ i $D(x)$ to wartości
+      funkcji ${L}_R(z_K)$ i ${L}_D(z_K)$, gdzie $K$ to ostatni krok algorytmu wstecznej propagacji.
+    </p>
+  </section>
+
+  <section>
+    <h3>Średnia wartość funkcji $A(x)$</h3>
+    <p>Zakładamy, ze 0 to klasa normalna, a reszta to anomalie.</p>
+    <img src="images/tabela.png">
+  </section>
+
+  <section>
+    <h3>Przykłady</h3>
+    <p>Po lewej - obrazy zadane dla modelu. </p>
+    <p>Po prawej - zrekonstruowane obrazy. </p>
+    <img src="images/targets_comparison.png" height="150">
+    <img src="images/generated_comparison.png" height="150">
+  </section>
+
 
     <section>
-      <h2>Thanks</h2>
-      <blockquote>"There's no such thing as a stupid question!"</blockquote>
+      <h2>Dziękuję!</h2>
       <p>
-        <small>Authors</small><br/>
-        <small><a href="">Links</a></small><br/>
+        <small>Bartosz Wójtowicz</small><br/>
       </p>
     </section>
   </div>
